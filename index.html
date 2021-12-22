@@ -1,3 +1,4 @@
+
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -5,13 +6,10 @@
 </head>
 <body>
 
-<h3>Background</h3>
+<h3>Nfc Url Writer</h3>
 <p>
-Web NFC aims to provide sites the ability to read and write to NFC tags when
-they are brought in close proximity to the user’s device (usually 5-10 cm, 2-4
-inches). The current scope is limited to NDEF, a lightweight binary message
-format. Low-level I/O operations (e.g. ISO-DEP, NFC-A/B, NFC-F) and Host-based
-Card Emulation (HCE) are not supported within the current scope.
+Read and write nfc devices 
+<br> default write url is google.com
 </p>
 
 <button id="scanButton">Scan</button>
@@ -43,14 +41,19 @@ scanButton.addEventListener("click", async () => {
 writeButton.addEventListener("click", async () => {
   console.log("User clicked write button");
 
-  try {
-    const ndef = new NDEFReader();
-    await ndef.write("Hello world!");
-    console.log("> Message written");
-  } catch (error) {
-    console.log("Argh! " + error);
-  }
+  const ndef = new NDEFReader();
+	ndef.write({
+	  records: [{ recordType: "url", data: "https://google.com" }]
+	}).then(() => {
+	  console.log("Message written.");
+	}).catch(error => {
+	  console.log(`Write failed :-( try again: ${error}.`);
+	});
+
 });
+
+<!-- https://web.dev/nfc/ read more here -->
+ <!-- https://github.com/googlechrome/samples/tree/gh-pages/web-nfc read more here -->
 </script>
 </body>
 </html>
