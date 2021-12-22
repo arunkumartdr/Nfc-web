@@ -1,0 +1,44 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+	<body>
+		<button id="scanButton">Scan</button>
+		<button id="writeButton">Write</button>
+	
+		<script>
+		scanButton.addEventListener("click", async () => {
+		  log("User clicked scan button");
+
+		  try {
+			const ndef = new NDEFReader();
+			await ndef.scan();
+			console.log("> Scan started");
+
+			ndef.addEventListener("readingerror", () => {
+			  log("Argh! Cannot read data from the NFC tag. Try another one?");
+			});
+
+			ndef.addEventListener("reading", ({ message, serialNumber }) => {
+			  log(`> Serial Number: ${serialNumber}`);
+			  log(`> Records: (${message.records.length})`);
+			});
+		  } catch (error) {
+			log("Argh! " + error);
+		  }
+		});
+
+		writeButton.addEventListener("click", async () => {
+		  console.log("User clicked write button");
+
+		  try {
+			const ndef = new NDEFReader();
+			await ndef.write("Hello world!");
+			log("> Message written");
+		  } catch (error) {
+			log("Argh! " + error);
+		  }
+		});
+		</script>
+	</body>
+</html>
