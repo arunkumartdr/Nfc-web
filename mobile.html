@@ -16,38 +16,30 @@ Read and write nfc devices
 
 
 <script>
-scanButton.addEventListener("click", async () => {
-  alert("User clicked scan button");
-
-  try {
-    const ndef = new NDEFReader();
-    await ndef.scan();
-    alert("Scan started");
-
-    ndef.addEventListener("readingerror", () => {
-      alert("Argh! Cannot read data from the NFC tag. Try another one?");
-    });
-
-    ndef.addEventListener("reading", ({ message, serialNumber }) => {
-      alert(`> Serial Number: ${serialNumber}`);
-      alert(`> Records: (${message.records.length})`);
-    });
-  } catch (error) {
-    alert("Argh! " + error);
-  }
-});
-
 writeButton.addEventListener("click", async () => {
   alert("User clicked write button");
-
-  const ndef = new NDEFReader();
-	ndef.write({
-	  records: [{ recordType: "url", data: "https://google.com" }]
-	}).then(() => {
-	  alert("Message written.");
-	}).catch(error => {
-	  alert(`Write failed :-( try again: ${error}.`);
-	});
+	const urlRecord = {
+	  recordType: "url",
+	  data:"https://w3c.github.io/web-nfc/"
+	};
+  
+  try {
+		const ndef = new NDEFReader();
+		await ndef.scan();
+		alert("Scan started Bring your tag close to device"); 
+		
+		ndef.addEventListener("readingerror", () => {
+		  alert("Argh! Cannot read NFC tag. Try another time / another tag ..");
+		});
+		
+		ndef.write({ records: [urlRecord] }).then(() => {
+		  alert("Message written.");
+		}).catch(error => {
+		  alert(`Write failed :-( try again: ${error}.`);
+		});
+	} catch (error) {
+    alert("Argh! " + error);
+  }
 
 });
 
