@@ -1,0 +1,58 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <script src="index.js" ></script> -->
+</head>
+<body>
+
+<h3>Nfc Url Writer</h3>
+<p>
+Read and write nfc devices 
+<br> default write url is google.com
+</p>
+
+<button id="scanButton">Scan</button>
+<button id="writeButton">Write</button>
+
+
+<script>
+scanButton.addEventListener("click", async () => {
+  console.log("User clicked scan button");
+
+  try {
+    const ndef = new NDEFReader();
+    await ndef.scan();
+    alert("Scan started");
+
+    ndef.addEventListener("readingerror", () => {
+      alert("Argh! Cannot read data from the NFC tag. Try another one?");
+    });
+
+    ndef.addEventListener("reading", ({ message, serialNumber }) => {
+      alert(`> Serial Number: ${serialNumber}`);
+      alert(`> Records: (${message.records.length})`);
+    });
+  } catch (error) {
+    alert("Argh! " + error);
+  }
+});
+
+writeButton.addEventListener("click", async () => {
+  alert("User clicked write button");
+
+  const ndef = new NDEFReader();
+	ndef.write({
+	  records: [{ recordType: "url", data: "https://google.com" }]
+	}).then(() => {
+	  alert("Message written.");
+	}).catch(error => {
+	  alert(`Write failed :-( try again: ${error}.`);
+	});
+
+});
+
+<!-- https://web.dev/nfc/ read more here -->
+ <!-- https://github.com/googlechrome/samples/tree/gh-pages/web-nfc read more here -->
+</script>
+</body>
+</html>
